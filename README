@@ -1,0 +1,20 @@
+Hangman Game for ICS-OS
+--------------------------------
+
+1. Extract from within ics-os source dir.
+
+   $tar xzvf hangman.tar.gz
+   $cd contrib/lights
+   $make
+   $make install
+
+2. Perform the steps to install ics-os.
+   $cd ../..
+   $sudo make install
+
+3. Run hangman.exe inside ics-os
+
+Enjoy!
+
+Saylon, Francis T.
+Marabe Ross Fiel
