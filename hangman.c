@@ -1,35 +1,46 @@
-/*					*/
-/*	 john paul ibay 07-67611	*/
-/*      angelo de la vina 07-67724	*/
-/*					*/
-/*	LIGHTSOUT! Game for ICS-OS	*/
+					
+/*	
+	Authors: 
+		Francis Saylon
+		Ross Marabe
+	Date and Time Created: 3:00 PM, May 10, 2018
+	Section: CMSC 125 T-7L
+	Program Description: Hangman Game for ICS-OS	
+*/
 
-
+// Libraries
 #include "../../sdk/dexsdk.h"
 #include "../../sdk/time.h"
 
+// Function Prototypes
 void erase(int x, int y, int w, int h);
 void print_board(int x, int y);
 
+// Constants
 #define START '1'
 #define QUIT_GAME '2'
 
 #define X_coord 85
 #define Y_coord 35
 
-// GLOBAL VARIABLES
+// Global Variables
 int level;
 int choices[2][13];
 char *words[5];
 
+// Main Function
 int main(){
 	char keypress = START; 
-	
+	int champion = 0;
+
 	set_graphics(VGA_320X200X256);
 	
 	do{
 		erase(1,1,400,220);
 		header(8, 5);
+
+		level = 1; // initialize level
+		champion = 0; // falsify championhood
 
 		keypress=(char)getch();
 		erase(1,1,400,220); 
@@ -43,6 +54,12 @@ int main(){
 		}else{
 			print_board(X_coord, Y_coord);
 		}
+
+		do{
+			if(keypress=(char)getch()){
+				
+			}
+		}while(champion !=1);
 
 	}while(keypress!=QUIT_GAME);
 	
@@ -62,10 +79,13 @@ header(int x, int y){
 
 void print_board(int x, int y){
 	int i, j, a, b;
+	a=x;
+	b=y;
 
 	for(i=0; i<2; i++, b+=24){
 		for(j=0; j<13; j++, a+=31)
 			write_text('A');
+		a=x;
 	}
 }
 
