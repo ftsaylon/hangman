@@ -20,6 +20,7 @@ void print_board(int x, int y);
 #define START '1'
 #define QUIT_GAME '2'
 #define QUIT '0'
+#define YES 'y'
 
 #define X_coord 85
 #define Y_coord 35
@@ -38,7 +39,7 @@ int main(){
 	
 	do{
 		erase(1,1,400,220);
-		header(8, 5);
+		header(10, 8);
 
 		level = 1; // initialize level
 		champion = 0; // falsify championhood
@@ -47,21 +48,25 @@ int main(){
 		erase(1,1,400,220); 
 
 		if(keypress==START){
-			setup_level();
+			do{
 
-			//update level display
-			erase(25,125,40,30);
-			write_text("0 - Quit Game",25,125,WHITE,0);
-		
-			print_board(X_coord, Y_coord);
-		}
+				if(keypress==START){
+					setup_level();
 
-		do{
-			keypress=(char)getch();
+					//update level display
+					erase(25,125,40,30);
+					write_text("0 - Quit Game",25,125,WHITE,0);
+
+				}else
+					print_board(X_coord, Y_coord);
+
+				do{
+					keypress=(char)getch();
+				}while(keypress != QUIT && champion !=1);
 				
-		}while(keypress != QUIT && champion !=1);
-
-	}while(keypress!=QUIT_GAME);
+			}while(keypress != YES);
+		}
+	}while(keypress != QUIT_GAME);
 	
 	set_graphics(VGA_TEXT80X25X16);
 	clrscr();
