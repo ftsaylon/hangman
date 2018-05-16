@@ -19,6 +19,7 @@ void print_board(int x, int y);
 // Constants
 #define START '1'
 #define QUIT_GAME '2'
+#define QUIT '0'
 
 #define X_coord 85
 #define Y_coord 35
@@ -50,16 +51,15 @@ int main(){
 
 			//update level display
 			erase(25,125,40,30);
-			write_text("0",25,125,WHITE,0);
-		}else{
+			write_text("0 - Quit Game",25,125,WHITE,0);
+		
 			print_board(X_coord, Y_coord);
 		}
 
 		do{
-			if(keypress=(char)getch()){
+			keypress=(char)getch();
 				
-			}
-		}while(champion !=1);
+		}while(keypress != QUIT && champion !=1);
 
 	}while(keypress!=QUIT_GAME);
 	
@@ -84,7 +84,7 @@ void print_board(int x, int y){
 
 	for(i=0; i<2; i++, b+=24){
 		for(j=0; j<13; j++, a+=31)
-			write_text('A');
+			write_text("A", a,b,WHITE,0);
 		a=x;
 	}
 }
