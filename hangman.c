@@ -51,26 +51,16 @@ int main(){
 
 		if(keypress==START){
 			do{
-
-<<<<<<< HEAD
-			//update level display
-			erase(25,125,40,30);
-			write_text("O",25,125,WHITE,0);
-			print_board_alphabet();
-		}else{
-			print_board_alphabet();
-		}
-=======
 				if(keypress==START){
 					setup_level();
->>>>>>> fe961197a1daf3be733cadb7108cecf608fd3a71
 
 					//update level display
 					erase(25,125,40,30);
+					write_text("O",25,125,WHITE,0);
 					print_board(X_coord, Y_coord,error_count);
-
-				}else
-					print_board(X_coord, Y_coord, error_count);
+				}else{
+					print_board(X_coord, Y_coord,error_count);
+				}
 
 				do{
 					if(keypress=(char)getch()){
@@ -111,7 +101,6 @@ header(int x, int y){
 	write_text("2 - Quit",200,160,WHITE,0);
 }
 
-<<<<<<< HEAD
 void print_board_alphabet(){
 	choices[4] = 1;
 	int i, x, y, counter =0;
@@ -190,7 +179,8 @@ void print_board_alphabet(){
 			x =20;
 			y = 150;
 		}
-=======
+}
+
 noose(int error_count){
 
 	if(error_count == 0){
@@ -260,7 +250,6 @@ void print_board(int x, int y, int error_count){
 	// Display Legend
 	write_text("Exit-0",5,40,WHITE,0);
 	write_text("Reset-R",5,50,WHITE,0);
->>>>>>> fe961197a1daf3be733cadb7108cecf608fd3a71
 }
 
 void erase(int x, int y, int w, int h){ //basically covers an area with a black rectangle
