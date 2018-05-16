@@ -14,12 +14,14 @@
 
 // Function Prototypes
 void erase(int x, int y, int w, int h);
-void print_board(int x, int y);
+void print_board(int x, int y, int error_count);
 
 // Constants
 #define START '1'
 #define QUIT_GAME '2'
-
+#define QUIT '0'
+#define YES 'y'
+#define RESET 'R'
 #define X_coord 85
 #define Y_coord 35
 
@@ -32,36 +34,58 @@ char *words[5];
 int main(){
 	char keypress = START; 
 	int champion = 0;
+	int error_count = 0;
 
 	set_graphics(VGA_320X200X256);
 	
 	do{
 		erase(1,1,400,220);
-		header(8, 5);
+		header(10, 8);
 
-		level = 1; // initialize level
+		level = 1; // initialize level		
 		champion = 0; // falsify championhood
+		error_count = 0;
 
 		keypress=(char)getch();
 		erase(1,1,400,220); 
 
 		if(keypress==START){
-			setup_level();
+			do{
 
-			//update level display
-			erase(25,125,40,30);
-			write_text("0",25,125,WHITE,0);
-		}else{
-			print_board(X_coord, Y_coord);
-		}
+				if(keypress==START){
+					setup_level();
 
-		do{
-			if(keypress=(char)getch()){
+					//update level display
+					erase(25,125,40,30);
+					print_board(X_coord, Y_coord,error_count);
+
+				}else
+					print_board(X_coord, Y_coord, error_count);
+
+				do{
+					if(keypress=(char)getch()){
+
+					}
+				}while(keypress != QUIT && champion !=1);
 				
-			}
-		}while(champion !=1);
-
-	}while(keypress!=QUIT_GAME);
+				if(champion==1){keypress = YES;}
+				else if(keypress == QUIT){
+					//prompt confirmation then erase message
+					write_text("Do you want to exit? y/n ",60,160,WHITE,0);
+					keypress=(char)getch();
+					erase(60,160,220,40);
+				}					
+				else if(keypress == RESET){
+					//prompt confirmation then erase message
+					write_text("Do you want to restart? y/n ",50,160,WHITE,0);
+					keypress=(char)getch();
+					if(keypress == YES) keypress = START;
+					erase(50,160,260,40);
+				}
+								
+			}while(keypress != YES);
+		}
+	}while(keypress != QUIT_GAME);
 	
 	set_graphics(VGA_TEXT80X25X16);
 	clrscr();
@@ -71,22 +95,81 @@ int main(){
 header(int x, int y){
 	
 	write_text("Hangman",120,40,WHITE,1); //title
-
+	
 	//menu options
 	write_text("1 - Start",40,160,WHITE,0); 
 	write_text("2 - Quit",200,160,WHITE,0);
 }
 
-void print_board(int x, int y){
+noose(int error_count){
+
+	if(error_count == 0){
+		write_text("===============",100, 0, WHITE, 1);
+		write_text("||",100, 10, WHITE, 1);
+		write_text("||",100, 20, WHITE, 1);
+		write_text("||",100, 30, WHITE, 1);
+		write_text("||",100, 40, WHITE, 1);
+		write_text("||",100, 50, WHITE, 1);
+		write_text("||",100, 60, WHITE, 1);
+		write_text("============",100, 70, WHITE, 1);
+	}else if(error_count == 1){
+		write_text("===============",100, 0, WHITE, 1);
+		write_text("||         +",100, 10, WHITE, 1);
+		write_text("||         +",100, 20, WHITE, 1);
+		write_text("||",100, 30, WHITE, 1);
+		write_text("||",100, 40, WHITE, 1);
+		write_text("||",100, 50, WHITE, 1);
+		write_text("||",100, 60, WHITE, 1);
+		write_text("============",100, 70, WHITE, 1);
+	}else if(error_count == 2){
+		write_text("===============",100, 0, WHITE, 1);
+		write_text("||         +",100, 10, WHITE, 1);
+		write_text("||         +",100, 20, WHITE, 1);
+		write_text("||        ( )",100, 30, WHITE, 1);
+		write_text("||",100, 40, WHITE, 1);
+		write_text("||",100, 50, WHITE, 1);
+		write_text("||",100, 60, WHITE, 1);
+		write_text("============",100, 70, WHITE, 1);
+	}else if(error_count == 3){
+		write_text("===============",100, 0, WHITE, 1);
+		write_text("||         +",100, 10, WHITE, 1);
+		write_text("||         +",100, 20, WHITE, 1);
+		write_text("||        ( )",100, 30, WHITE, 1);
+		write_text("||       / | /",100, 40, WHITE, 1);
+		write_text("||",100, 50, WHITE, 1);
+		write_text("||",100, 60, WHITE, 1);
+		write_text("============",100, 70, WHITE, 1);
+	}else if(error_count == 4){
+		write_text("===============",100, 0, WHITE, 1);
+		write_text("||         +",100, 10, WHITE, 1);
+		write_text("||         +",100, 20, WHITE, 1);
+		write_text("||        ( )",100, 30, WHITE, 1);
+		write_text("||       / | /",100, 40, WHITE, 1);
+		write_text("||        | |",100, 50, WHITE, 1);
+		write_text("||",100, 60, WHITE, 1);
+		write_text("============",100, 70, WHITE, 1);
+	}else if(error_count == 5){
+		write_text("===============",100, 0, WHITE, 1);
+		write_text("||         +",100, 10, WHITE, 1);
+		write_text("||         +",100, 20, WHITE, 1);
+		write_text("||        (X)",100, 30, WHITE, 1);
+		write_text("||       / | /",100, 40, WHITE, 1);
+		write_text("||        | |",100, 50, WHITE, 1);
+		write_text("||",100, 60, WHITE, 1);
+		write_text("============",100, 70, WHITE, 1);
+	}
+}
+
+void print_board(int x, int y, int error_count){
 	int i, j, a, b;
 	a=x;
 	b=y;
 
-	for(i=0; i<2; i++, b+=24){
-		for(j=0; j<13; j++, a+=31)
-			write_text('A');
-		a=x;
-	}
+	noose(error_count);
+	
+	// Display Legend
+	write_text("Exit-0",5,40,WHITE,0);
+	write_text("Reset-R",5,50,WHITE,0);
 }
 
 void erase(int x, int y, int w, int h){ //basically covers an area with a black rectangle
