@@ -1,4 +1,4 @@
-					
+				
 /*	
 	Authors: 
 		Francis Saylon
@@ -27,7 +27,7 @@ void print_board(int x, int y, int error_count);
 
 // Global Variables
 int level;
-int choices[2][13];
+int choices[26];
 char *words[5];
 
 // Main Function
@@ -52,8 +52,18 @@ int main(){
 		if(keypress==START){
 			do{
 
+<<<<<<< HEAD
+			//update level display
+			erase(25,125,40,30);
+			write_text("O",25,125,WHITE,0);
+			print_board_alphabet();
+		}else{
+			print_board_alphabet();
+		}
+=======
 				if(keypress==START){
 					setup_level();
+>>>>>>> fe961197a1daf3be733cadb7108cecf608fd3a71
 
 					//update level display
 					erase(25,125,40,30);
@@ -101,6 +111,86 @@ header(int x, int y){
 	write_text("2 - Quit",200,160,WHITE,0);
 }
 
+<<<<<<< HEAD
+void print_board_alphabet(){
+	choices[4] = 1;
+	int i, x, y, counter =0;
+	char color = WHITE;
+
+	x = 10;
+	y =120;
+
+	for(i=0; i<26; i++, x+= 20){
+		if(choices[counter] == 0){
+			color = WHITE;
+		}else{
+			color = RED;
+		}
+		switch(counter){
+			case 1: 
+				write_text("A", x, y, color, 0);
+				break;
+			case 2: 
+				write_text("B", x, y, color, 0);
+				break;
+			case 3: 
+				write_text("C", x, y, color, 0);
+				break;
+			case 4: 
+				write_text("D", x, y, color, 0);
+				break;
+			case 5: 
+				write_text("E", x, y, color, 0);
+				break;
+			case 6: 
+				write_text("F", x, y, color, 0);
+				break;
+			case 7: 
+				write_text("G", x, y, color, 0);
+				break;
+			case 8: 
+				write_text("H", x, y, color, 0);
+				break;
+			case 9: 
+				write_text("I", x, y, color, 0);
+				break;
+			case 10: 
+				write_text("J", x, y, color, 0);
+				break;
+			case 11: 
+				write_text("K", x, y, color, 0);
+				break;
+			case 12: 
+				write_text("L", x, y, color, 0);
+				break;
+			case 13: 
+				write_text("M", x, y, color, 0);
+				break;
+			case 14: 
+				write_text("M", x, y, color, 0);
+				break;
+			case 15: 
+				write_text("M", x, y, color, 0);
+				break;
+			case 16: 
+				write_text("M", x, y, color, 0);
+				break;
+			case 17: 
+				write_text("M", x, y, color, 0);
+				break;
+			case 18: 
+				write_text("M", x, y, color, 0);
+				break;
+			default:
+				break;
+			}
+			counter  += 1;
+		}
+		if(counter == 12){
+			x =20;
+			y = 150;
+		}
+=======
 noose(int error_count){
 
 	if(error_count == 0){
@@ -170,6 +260,7 @@ void print_board(int x, int y, int error_count){
 	// Display Legend
 	write_text("Exit-0",5,40,WHITE,0);
 	write_text("Reset-R",5,50,WHITE,0);
+>>>>>>> fe961197a1daf3be733cadb7108cecf608fd3a71
 }
 
 void erase(int x, int y, int w, int h){ //basically covers an area with a black rectangle
