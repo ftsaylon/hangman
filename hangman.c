@@ -56,24 +56,24 @@ int main(){
 
 					//update level display
 					erase(25,125,40,30);
-					write_text("O",25,125,WHITE,0);
-					print_board(X_coord, Y_coord,error_count);
+		
 				}else{
 					print_board(X_coord, Y_coord,error_count);
 				}
 
 				do{
 					if(keypress=(char)getch()){
-
+						
 					}
+
 				}while(keypress != QUIT && champion !=1);
 				
 				if(champion==1){keypress = YES;}
 				else if(keypress == QUIT){
 					//prompt confirmation then erase message
-					write_text("Do you want to exit? y/n ",60,160,WHITE,0);
+					write_text("Do you want to exit? y/n ",50,160,WHITE,0);
 					keypress=(char)getch();
-					erase(60,160,220,40);
+					erase(50,160,220,40);
 				}					
 				else if(keypress == RESET){
 					//prompt confirmation then erase message
@@ -264,11 +264,13 @@ void setup_level(){
 
 	switch(level){
 		case 1:
-			words[0] = 'ABELARD';
-			words[1] = 'AVERT';
-			words[2] = 'BOW';
-			words[3] = 'CAR';
-			words[4] = 'DOG';
+			words[0] = "ABELARD";
+			words[1] = "AVERT";
+			words[2] = "BOW";
+			words[3] = "CAR";
+			words[4] = "DOG";
 			break;
-	}	
+	}
+
+	print_board(X_coord, Y_coord, 0);	
 }
