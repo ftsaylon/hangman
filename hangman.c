@@ -68,14 +68,15 @@ int main(){
 						erase(30, 120, 270, 250);
 						print_board(X_coord, Y_coord,error_count);
 					}
+
 				}while(keypress != QUIT && champion !=1);
 				
 				if(champion==1){keypress = YES;}
 				else if(keypress == QUIT){
 					//prompt confirmation then erase message
-					write_text("Do you want to exit? y/n ",60,160,WHITE,0);
+					write_text("Do you want to exit? y/n ",50,160,WHITE,0);
 					keypress=(char)getch();
-					erase(60,160,220,40);
+					erase(50,160,220,40);
 				}					
 				else if(keypress == RESET){
 					//prompt confirmation then erase message
@@ -332,5 +333,7 @@ void setup_level(){
 			words[3] = "MATHEMATICIAN";
 			words[4] = "MODIFIED";
 			break;
-	}	
+	}
+
+	print_board(X_coord, Y_coord, 0);	
 }
