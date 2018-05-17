@@ -14,11 +14,12 @@
 
 // Function Prototypes
 void erase(int x, int y, int w, int h);
-void print_board(int x, int y, int error_count);
+void print_board(int x, int y);
 
 // Constants
 #define START '1'
 #define QUIT_GAME '2'
+#define GAMEOVER '3'
 #define QUIT '0'
 #define YES '5'
 #define RESET '8'
@@ -29,12 +30,16 @@ void print_board(int x, int y, int error_count);
 int level;
 int choices[26];
 char *words[5];
+int error_count;
+int correct;
+int level;
 
 // Main Function
 int main(){
 	char keypress = START; 
 	int champion = 0;
-	int error_count = 0;
+	error_count = correct = 0;
+	int word_index=0;
 
 	set_graphics(VGA_320X200X256);
 	
@@ -44,7 +49,6 @@ int main(){
 
 		level = 1; // initialize level		
 		champion = 0; // falsify championhood
-		error_count = 4;
 
 		keypress=(char)getch();
 		erase(1,1,400,220); 
@@ -52,46 +56,103 @@ int main(){
 		if(keypress==START){
 			do{
 				if(keypress==START){
-					setup_level();
+					setup_level(level);
 
 					//update level display
 					erase(25,125,40,30);
 					// write_text("O",25,125,WHITE,0);
-					print_board(X_coord, Y_coord,error_count);
+					print_blanks(word_index);
+					print_board(X_coord, Y_coord);
 				}else{
-					print_board(X_coord, Y_coord,error_count);
+					print_blanks(word_index);
+					print_board(X_coord, Y_coord);
 				}
 
+				word_index=0;
 				do{
 					if(keypress=(char)getch()){
+						correct=0; //reset counting of blanks
+
 						check_if_exist(words[0][1], keypress);
 						erase(30, 120, 270, 250);
-						print_board(X_coord, Y_coord,error_count);
+						print_blanks(word_index); //Print blanks
+
+						if(strchr(words[word_index], keypress) == NULL){ //Checks if input is found in the word
+							error_count++;
+						}
+
+						print_board(X_coord, Y_coord);
+					}
+					if(error_count == 5) break;
+					
+					// Will enter this if-statement if word is spelled correctly
+					if(correct == 0 && error_count < 5) {
+						reset(); //Resets the board
+						erase(1,1,400,220); 
+						word_index++; // Go to next word	
+						
+						if(word_index == 5){ //Go to next level
+							word_index = 0;
+							level++;
+							setup_level(level);
+						}
+						
+						if(level > 5){ //Check if all levels are done
+							reset();
+							champion = 1;
+							break;
+						}
+
+						print_blanks(word_index);
+						print_board(X_coord, Y_coord);
 					}
 
 				}while(keypress != QUIT && champion !=1);
 				
+				if(error_count==5){keypress = GAMEOVER;}
+				
+				if(keypress == GAMEOVER){
+					//prompt Game Over message
+					write_text("Game Over",50,160,WHITE,0);
+					reset();
+					keypress=RESET;
+				}
+				
 				if(champion==1){keypress = YES;}
 				else if(keypress == QUIT){
 					//prompt confirmation then erase message
-					write_text("Do you want to exit? y/n ",50,160,WHITE,0);
+					write_text("Do you want to exit? y/n",50,160,WHITE,0);
+					write_text("5-Y",60,170,WHITE,0);
 					keypress=(char)getch();
 					erase(50,160,220,40);
+					erase(60,170,230,50);
 				}					
 				else if(keypress == RESET){
 					//prompt confirmation then erase message
-					write_text("Do you want to restart? y/n ",50,160,WHITE,0);
+					write_text("Do you want to restart? y/n",50,180,WHITE,0);
 					keypress=(char)getch();
-					if(keypress == YES) keypress = START;
+					if(keypress == YES) {
+						reset();
+						keypress = START;
+					}else{
+						keypress=QUIT;
+						break;
+					}	
 					erase(50,160,260,40);
 				}
 								
-			}while(keypress != YES);
+			}while(keypress != YES && error_count < 5);
 		}
 	}while(keypress != QUIT_GAME);
 	
 	set_graphics(VGA_TEXT80X25X16);
 	clrscr();
+}
+
+void reset(){
+	int i;
+	for(i=0; i<26; i++) choices[i] = 0;
+	error_count = 0;
 }
 
 //displays header
@@ -105,22 +166,18 @@ header(int x, int y){
 }
 
 void check_if_exist(char * word, char keypress){
-	int i;
-	// if(strch(word, keypress)){
-
-	// }
-	//mark 
 	choices[keypress-97] = 1;
 }
 
 void print_board_alphabet(){
+	// Function that prints the alphabet/letter bank
 	int i, x, y, counter =0;
 	char color = WHITE;
 	// char 
 	x = 20;
 	y = 120;
 	for(i=0; i<26; i++, x+= 20){
-		if(choices[counter] == 0){
+		if(choices[counter] == 0){ //If-statement for color of letter
 			color = WHITE;
 		}else{
 			color = RED;
@@ -216,7 +273,8 @@ void print_board_alphabet(){
 		}
 }
 
-noose(int error_count){
+// Prints the noose
+noose(){
 
 	if(error_count == 0){
 		write_text("===============",100, 0, WHITE, 1);
@@ -275,16 +333,132 @@ noose(int error_count){
 	}
 }
 
-void print_board(int x, int y, int error_count){
+void print_blanks(int word_selected){
+	int i;
+	int word_size = strlen(words[word_selected]); //Get length of word
+	char letter;
+
+	erase(120, 100, (word_size+1)*10, 110);
+
+	for(i=0; i<word_size; i++){ //Iterate through the word
+		int letter_index = words[word_selected][i]-97;
+
+		if(choices[letter_index] == 1){ //Check if letter in the word is already marked
+			switch(letter_index){
+				case 0: 
+					write_text(" A ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 1: 
+					write_text(" B ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 2: 
+					write_text(" C ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 3: 
+					write_text(" D ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 4: 
+					write_text(" E ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 5: 
+					write_text(" F ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 6: 
+					write_text(" G ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 7: 
+					write_text(" H ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 8: 
+					write_text(" I ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 9: 
+					write_text(" J ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 10: 
+					write_text(" K ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 11: 
+					write_text(" L ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 12: 
+					write_text(" M ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 13: 
+					write_text(" N ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 14: 
+					write_text(" O ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 15: 
+					write_text(" P ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 16: 
+					write_text(" Q ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 17: 
+					write_text(" R ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 18: 
+					write_text(" S ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 19: 
+					write_text(" T ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 20: 
+					write_text(" U ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 21: 
+					write_text(" V ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 22: 
+					write_text(" W ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 23: 
+					write_text(" X ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 24: 
+					write_text(" Y ", 120+(i*10), 100, WHITE, 0);
+					break;
+				case 25: 
+					write_text(" Z ", 120+(i*10), 100, WHITE, 0);
+					break;
+				default:
+					break;
+				}
+
+			
+		}else{
+			correct++; // Counts correct input of user
+			write_text(" _ ", 120+(i*10), 100, WHITE, 0);
+		}
+	}
+}
+
+// Prints the board
+void print_board(int x, int y){
 	int i, j, a, b;
+	char str[15];
 	a=x;
 	b=y;
+	
+	noose();
 
-	noose(error_count);
 	print_board_alphabet();
 	// Display Legend
 	write_text("Exit-0",5,40,WHITE,0);
-	write_text("Reset-8",5,50,WHITE,0);
+	switch(level){
+		case 1: write_text("Level: 1", 5,60, WHITE, 0);
+		break; 
+		case 2: write_text("Level: 2", 5,60, WHITE, 0);
+		break; 
+		case 3: write_text("Level: 3", 5,60, WHITE, 0);
+		break; 
+		case 4: write_text("Level: 4", 5,60, WHITE, 0);
+		break; 
+		case 5: write_text("Level: 5", 5,60, WHITE, 0);
+		break; 
+	}
 }
 
 void erase(int x, int y, int w, int h){ //basically covers an area with a black rectangle
@@ -294,46 +468,46 @@ void erase(int x, int y, int w, int h){ //basically covers an area with a black 
          write_pixel(j,i,100);
 }
 
-void setup_level(){
+void setup_level(int level){
 	int i, j;
 
 	switch(level){
 		case 1:
-			words[0] = "HER";
-			words[1] = "DOE";
-			words[2] = "RAT";
-			words[3] = "CAT";
-			words[4] = "DOG";
+			words[0] = "her";
+			words[1] = "doe";
+			words[2] = "rat";
+			words[3] = "cat";
+			words[4] = "dog";
 			break;
 		case 2:
-			words[0] = "DRUNK";
-			words[1] = "DRAWN";
-			words[2] = "ROUND";
-			words[3] = "WOUND";
-			words[4] = "DOWN";
+			words[0] = "drunken";
+			words[1] = "drawn";
+			words[2] = "round";
+			words[3] = "wound";
+			words[4] = "down";
 			break;
 		case 3:
-			words[0] = "AROUND";
-			words[1] = "CIRCLE";
-			words[2] = "EARLY";
-			words[3] = "CRAWLED";
-			words[4] = "DRILLED";
+			words[0] = "around";
+			words[1] = "circle";
+			words[2] = "early";
+			words[3] = "crawled";
+			words[4] = "drilled";
 			break;
 		case 4:
-			words[0] = "NUTRITION";
-			words[1] = "COMPUTER";
-			words[2] = "ENGINEER";
-			words[3] = "GEODETIC";
-			words[4] = "DRAINAGE";
+			words[0] = "nutrition";
+			words[1] = "computer";
+			words[2] = "engineer";
+			words[3] = "geodetic";
+			words[4] = "drainage";
 			break;
 		case 5:
-			words[0] = "COMMUNICATION";
-			words[1] = "INFORMATION";
-			words[2] = "PROGRAMMER";
-			words[3] = "MATHEMATICIAN";
-			words[4] = "MODIFIED";
+			words[0] = "communication";
+			words[1] = "information";
+			words[2] = "programmer";
+			words[3] = "mathematician";
+			words[4] = "modified";
 			break;
 	}
 
-	print_board(X_coord, Y_coord, 0);	
+	print_board(X_coord, Y_coord);	
 }
